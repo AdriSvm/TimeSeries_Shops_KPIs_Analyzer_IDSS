@@ -23,7 +23,7 @@ Logs in the user and returns {"access_token":"token"} if valid
 #### Register a new user
 
 ```http
-  GET /register
+  POST /register
 ```
 | Authorization | Value |
 | :-------- | :------- |
