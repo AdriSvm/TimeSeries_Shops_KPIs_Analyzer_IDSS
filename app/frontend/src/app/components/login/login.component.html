@@ -1,0 +1,31 @@
+<div class="container-fluid fondo text-center " style="height: 100vh;">
+    <form [formGroup]="form" (ngSubmit)="send_form(form.value)">
+        <div  class="container-fluid text-center caja rounded-1 p-4 shadow" style=" position: absolute; top: 0; left: 0; bottom: 0; right: 0; margin: auto; height: fit-content; width: 30%;">
+
+            <div class="row text-center justify-content-center align-items-center">
+                <div class="col-auto">
+                    <img src="../../../assets/logo.jpg" class="img-fluid" alt="" style="width: 50%;">
+                </div>
+            </div>
+
+            <div class="row text-center justify-content-center align-items-center p-2">
+                <div class="col-10 text-start">
+                    <label for="exampleFormControlInput1" class="form-label">Usuario</label>
+                    <input type="text" class="form-control" id="exampleFormControlInput1" formControlName="username">
+                </div>
+            </div>
+            <div class="row text-center justify-content-center align-items-center p-2">
+                <div class="col-10 text-start">
+                    <label for="exampleFormControlInput1" class="form-label">Contraseña</label>
+                    <input type="password" class="form-control" id="exampleFormControlInput1" formControlName="password">
+                </div>
+            </div>
+
+            <div class="row text-center justify-content-center align-items-center p-2">
+                <div class="col-auto text-start">
+                    <button class="btn btn-secondary" type="submit">Iniciar sesión</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

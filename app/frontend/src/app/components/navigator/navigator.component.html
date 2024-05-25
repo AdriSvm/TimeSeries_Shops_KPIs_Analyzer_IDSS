@@ -1,0 +1,8 @@
+
+<div class="position-fixed top-0 start-0 navigatorr">
+    <ul class="nav flex-column">
+        <li class="nav-item p-2" *ngFor="let r of routes; let i = index">
+          <a class="nav-link linked" [routerLink]="'/' + r" [routerLinkActive]="'activado'"><i class="{{icons[i]}}"></i>  {{r}}</a>
+        </li>
+    </ul>
+</div>

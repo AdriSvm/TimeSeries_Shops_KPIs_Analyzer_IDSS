@@ -1,0 +1,23 @@
+.activado{
+    background-color: #f8f9fa;
+    color: #007bff;
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.navigatorr{
+    background-color: #eaeaea;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 5px;
+    color: #2b2b2b;
+    height: 99vh;
+    width: auto;
+}
+
+.linked{
+    color: #2b2b2b;
+    cursor: pointer;
+}

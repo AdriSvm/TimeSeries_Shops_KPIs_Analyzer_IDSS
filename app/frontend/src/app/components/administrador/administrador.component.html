@@ -1,0 +1,64 @@
+<div class="container p-2">
+    <div class="row justify-content-center align-items-center text-center p-4">
+        <div class="col-10">
+            <p class="fs-1 fw-semibold">Panel de administrador</p>
+        </div>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="send_form(form.value)">
+        <div class="row justify-content-center align-items-center text-center border-1 rounded-1 p-2 pb-3 caja gx-3 gy-3">
+            <div class="col-10">
+                <p class="fs-3 fw-semibold">Crear usuario</p>
+            </div>
+            <div class="col-3">
+                <label for="user" class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="user" formControlName="username">
+            </div>
+            <div class="col-3">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" formControlName="password">
+            </div>
+            <div class="col-3">
+                <label for="" class="form-label">Tipo de acceso</label>
+                <select name="data" id="data" class="form-select" formControlName="type" title="ada">
+                    <option value="user">Usuario</option>
+                    <option value="admin">Administrador</option>
+                </select>
+            </div>
+            <div class="col-10 p-3 pb-0" *ngIf="error_msg">
+                <p class="text-danger">{{error_msg}}</p>
+            </div>
+            <div class="col-10 p-3">
+                <button class="btn btn-dark" type="submit">Crear Usuario</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="row justify-content-center align-items-center text-center border-1 rounded-1 p-3 mt-5 caja">
+        <div class="col-10">
+            <p class="fs-3 fw-semibold">Usuarios</p>
+        </div>
+
+        <div class="col-10">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Contraseña</th>
+                        <th scope="col">Tipo de acceso</th>
+                        <th scope="col">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>admin</td>
+                        <td>admin</td>
+                        <td>Administrador</td>
+                        <td>
+                            <button class="btn btn-danger">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
