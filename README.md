@@ -23,7 +23,7 @@ Logs in the user and returns {"access_token":"token"} if valid
 #### Register a new user
 
 ```http
-  POST /register/
+  GET /register/
 ```
 | Authorization | Value |
 | :-------- | :------- |
@@ -53,13 +53,29 @@ Logs in the user and returns {"access_token":"token"} if valid
 Returns a Response object with json of all the extractions for the analysis to be shown in the web page
 
 
-## Acknowledgements
+### MUST BE ADMINISTRATOR TO REACH:
 
- - [FLASK Docs](https://flask.palletsprojects.com/en/3.0.x/)
- - [SQLAlchemy Docs](https://docs.sqlalchemy.org/en/20/)
- - [Pandas Docs](https://pandas.pydata.org/docs/)
- - [tslearn Docs](https://tslearn.readthedocs.io/en/stable/index.html)
- - [SciPy Docs](https://docs.scipy.org/doc//scipy/index.html)
+#### Get all users
+
+```http
+  GET /get_users/
+```
+| Authorization | Value |
+| :-------- | :------- |
+| `Bearer Token` | YOUR_TOKEN |
+
+#### Delete some user
+
+```http
+  GET /delete_user/
+```
+| Authorization | Value |
+| :-------- | :------- |
+| `Bearer Token` | YOUR_TOKEN |
+
+| Argument | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `username` | `string` | **Required**.The ID of the username to delete |
 
 
 
@@ -72,6 +88,18 @@ Returns a Response object with json of all the extractions for the analysis to b
 
 This project has been used by the following company:
 
-- KOROSHI
+- [KOROSHI](https://www.koroshishop.com/)
+
+
+## Contact
+
+For any type of message, adriam@phoedata.com is your mail
+
+
+## Authors
+
+- [@AdriSvm](https://github.com/AdriSvm)
+- [@Javierpuerta22](https://github.com/Javierpuerta22)
+- [@danielspiri](https://github.com/danielspiri)
 
 
