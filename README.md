@@ -10,7 +10,7 @@ A project designed exclusively for KOROSHI brand to analyze the evolution of the
 #### Login Page
 
 ```http
-  POST /login
+  POST /login/
 ```
 
 | Parameter | Type     | Description                |
@@ -23,7 +23,7 @@ Logs in the user and returns {"access_token":"token"} if valid
 #### Register a new user
 
 ```http
-  POST /register
+  POST /register/
 ```
 | Authorization | Value |
 | :-------- | :------- |
@@ -39,7 +39,7 @@ Logs in the user and returns {"access_token":"token"} if valid
 #### Get the Timeseries Analysis
 
 ```http
-  GET /get_info
+  GET /get_info/
 ```
 | Authorization | Value |
 | :-------- | :------- |
@@ -47,8 +47,8 @@ Logs in the user and returns {"access_token":"token"} if valid
 
 | Argument | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `min_date` | `string` | **Required**. The starting date for the analysis |
-| `max_date` | `string` | **Required**. The end date for the analysis |
+| `start` | `string` | **Required**. The starting date for the analysis |
+| `end` | `string` | **Required**. The end date for the analysis |
 
 Returns a Response object with json of all the extractions for the analysis to be shown in the web page
 
