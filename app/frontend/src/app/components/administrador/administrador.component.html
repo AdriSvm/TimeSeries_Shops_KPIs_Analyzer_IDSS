@@ -19,13 +19,20 @@
             </div>
             <div class="col-3">
                 <label for="" class="form-label">Tipo de acceso</label>
-                <select name="data" id="data" class="form-select" formControlName="type" title="ada">
-                    <option value="user">Usuario</option>
-                    <option value="admin">Administrador</option>
+                <select name="data" id="data" class="form-select" formControlName="is_admin" title="ada">
+                    <option [value]="false">Usuario</option>
+                    <option [value]="true">Administrador</option>
                 </select>
+            </div>
+            <div class="col-3">
+                <label for="" class="form-label">Id del almacen</label>
+                <input type="number" class="form-control" formControlName="idalmacen">
             </div>
             <div class="col-10 p-3 pb-0" *ngIf="error_msg">
                 <p class="text-danger">{{error_msg}}</p>
+            </div>
+            <div class="col-10 p-3 pb-0" *ngIf="error_sccss">
+                <p class="text-success">{{error_sccss}}</p>
             </div>
             <div class="col-10 p-3">
                 <button class="btn btn-dark" type="submit">Crear Usuario</button>
@@ -38,27 +45,51 @@
             <p class="fs-3 fw-semibold">Usuarios</p>
         </div>
 
-        <div class="col-10">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th scope="col">Usuario</th>
-                        <th scope="col">Contraseña</th>
-                        <th scope="col">Tipo de acceso</th>
-                        <th scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>admin</td>
-                        <td>admin</td>
-                        <td>Administrador</td>
-                        <td>
-                            <button class="btn btn-danger">Eliminar</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="col-10" *ngIf="dataSource">
+            <mat-form-field>
+                <mat-label>Filter</mat-label>
+                <input matInput (keyup)="applyFilter($event)" class="form-control" #input>
+              </mat-form-field>
+              
+              <div class="mat-elevation-z8">
+                <table mat-table [dataSource]="dataSource" matSort>
+              
+                  <ng-container matColumnDef="fldIdUsuario">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID usuario </th>
+                    <td mat-cell *matCellDef="let row"> {{row.fldIdUsuario}} </td>
+                  </ng-container>
+              
+                  <ng-container matColumnDef="fldIdAlmacen">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> ID Almacén </th>
+                    <td mat-cell *matCellDef="let row"> {{row.fldIdAlmacen}} </td>
+                  </ng-container>
+              
+                  <ng-container matColumnDef="fldIdClaveAcceso">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Clave de Acceso </th>
+                    <td mat-cell *matCellDef="let row"> ***** </td>
+                  </ng-container>
+              
+                  <ng-container matColumnDef="fldIdNivelAcceso">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nivel de acceso </th>
+                    <td mat-cell *matCellDef="let row"> {{transform_level(row.fldIdNivelAcceso)}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="eliminar">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Eliminar usuario </th>
+                    <td mat-cell *matCellDef="let row"> <button class="btn btn-danger p-2" (click)="delete_user(row.eliminar)">Eliminar</button> </td>
+                  </ng-container>
+              
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              
+                  <!-- Row shown when there is no matching data. -->
+                  <tr class="mat-row" *matNoDataRow>
+                    <td class="mat-cell" colspan="4">No hay datos que coincidan con la busqueda "{{input.value}}"</td>
+                  </tr>
+                </table>
+              
+                <mat-paginator [pageSizeOptions]="[5, 10, 25]" aria-label="Select page of users"></mat-paginator>
+              </div>              
         </div>
     </div>
 </div>

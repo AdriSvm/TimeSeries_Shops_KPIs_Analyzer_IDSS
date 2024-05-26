@@ -13,3 +13,5 @@ label {
   color: #2b2b2b;
   border-radius: 5px;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -39,12 +39,11 @@ export class MultiChartCardComponent implements OnChanges{
   parametros:any;
 
   ngOnChanges(changes: SimpleChanges){
-    if (this.initialized){
-      if (changes["id"]){
-        this.id = changes["id"].currentValue
+      if (this.initialized){
+        var new_data = changes["data"].currentValue
+        this.chart.data = new_data
         this.updateChart()
       }
-    }
   }
 
 

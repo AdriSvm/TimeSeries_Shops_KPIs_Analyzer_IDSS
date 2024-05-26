@@ -3,7 +3,8 @@ import pathlib
 import logging
 import pickle
 
-from flask import Flask, render_template, g, request, redirect, url_for, current_app, session, abort, jsonify, flash, send_file
+from flask import Flask, render_template, g, request, redirect, url_for, current_app, session, abort, jsonify, flash, \
+    send_file
 from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
@@ -20,7 +21,8 @@ from sqlalchemy.orm import sessionmaker
 from flask_migrate import Migrate
 from sqlalchemy import URL
 
-def load_metadata(engine):
+
+def load_metadata():
     logger = logging.getLogger(__name__)
     try:
         with open('metadata.pkl', 'rb') as f:
@@ -31,11 +33,10 @@ def load_metadata(engine):
         with open('metadata.pkl', 'wb') as f:
             pickle.dump(metadata, f)
         logger.info("Metadatos reflejados y guardados en el caché.")
-    metadata.reflect(engine)
     return metadata
 
-def setup_logging():
 
+def setup_logging():
     config_file = pathlib.Path("app/utils/logging_configdict.json")
     dict_config = None
     with open(config_file) as f_in:
@@ -51,12 +52,13 @@ def setup_logging():
     queue_listener.start()
     atexit.register(queue_listener.stop)
 
+
 db = SQLAlchemy()
 Base = automap_base()
 mail = Mail()
 
 
-def create_app(config_path:str='config.json',debug=False):
+def create_app(config_path: str = 'config.json', debug=False):
     setup_logging()
 
     logger = logging.getLogger("init")
@@ -68,7 +70,7 @@ def create_app(config_path:str='config.json',debug=False):
     logging.basicConfig(
         level=config.LOG_LEVEL if config.LOG_LEVEL in ('DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL') else 'DEBUG')
 
-    #logging.getLogger('sqlalchemy.engine').setLevel(config.LOG_LEVEL if config.LOG_LEVEL in ('DEBUG','INFO','WARNING','ERROR','CRITICAL') else 'DEBUG')
+    # logging.getLogger('sqlalchemy.engine').setLevel(config.LOG_LEVEL if config.LOG_LEVEL in ('DEBUG','INFO','WARNING','ERROR','CRITICAL') else 'DEBUG')
 
     # Init app
     app = Flask(__name__)
@@ -119,17 +121,21 @@ def create_app(config_path:str='config.json',debug=False):
         engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
         logger.info("Engine created" + str(engine))
 
-        metadata = load_metadata(engine)
+        metadata = load_metadata()
         logger.info(f"metadata loaded")
 
+        tables_to_reflect =['tbdAccesosUsuario','tbdAttClientes','tbdTicketCabecera','tbdTicketLineas','tbdAlmacenes']
+
+        metadata.reflect(engine, only=tables_to_reflect)
+
         Base.metadata = metadata
-        Base.prepare(engine, reflect=True)
+        Base.prepare()
         logger.info(f"Base prepared")
 
-        from .models import User,Cliente,TiquetCabecera,TiquetLinea,Almacen
+        from .models import User, Cliente, TiquetCabecera, TiquetLinea, Almacen
 
         logger.info(f"Models imported, preparing base")
-        Base.prepare(engine, reflect=True)
+        Base.prepare()
         logger.info(f"Base prepared with models")
 
         app.config['Base'] = Base
@@ -142,12 +148,15 @@ def create_app(config_path:str='config.json',debug=False):
 
         app.register_blueprint(timeseries_bp)
 
+        from .admin import admin_bp
+        app.register_blueprint(admin_bp)
+
         logger.info(f"Creating all tables")
         Base.metadata.create_all(engine)
 
-    @app.route('/')
-    def index():
-        return jsonify({'message': 'Hello World!'})
-
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def initialise(path):
+        return render_template('index.html')
 
     return app

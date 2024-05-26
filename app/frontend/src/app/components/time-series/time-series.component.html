@@ -5,27 +5,58 @@
         </div>
     </div>
 
-    <div class="row justify-content-center align-items-center align-content-center text-center caja p-3 gx-3 gy-3">
+    <div class="row justify-content-center align-items-center align-content-center text-center caja p-3 gx-3 gy-3" *ngIf="tabla && first_row">
         <div class="col-10">
-            <p class="fs-3 fw-semibold">Filtros</p>
+            <p class="fs-3 fw-semibold">Traffic light pannel</p>
         </div>
-        <div class="col-3">
-            <p>Selecciona el KPI a visualizar</p>
-        </div>
-        <div class="col-3">
-            <select name="data" id="data" class="form-select" title="ada">
-                <option value="1">Usuario 1</option>
-                <option value="2">Usuario 2</option>
-                <option value="3">Usuario 3</option>
-            </select>
-        </div>
-
-        <div class="col-4">
-            <button class="btn btn-dark" type="button">Aplicar filtros</button>
-        </div>
-
-        <div class="col-10">
-            <app-multi-chart-card [id]="'83383'" [background]="'#2b2b2b'" [data]="data" [tipo]="'line'"></app-multi-chart-card>
+        <div class="col-10 table-responsive">
+            <table class="table">
+                <thead class="table-dark">
+                  <tr>
+                    <th scope="col">Clusters</th>
+                    <th scope="col" *ngFor="let titles of first_row"><b>{{titles[1]}} ({{titles[0]}})</b></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let fila of tabla; let i = index">
+                    <th scope="row" [ngStyle]="{'backgroundColor': clusters_colors[i]}">{{i + 1}}</th>
+                    <td *ngFor="let col of fila" [ngStyle]="{'backgroundColor': col[1]}">{{col[0]}}</td>
+                  </tr>
+                </tbody>
+            </table>
         </div>
     </div>
+    <form [formGroup]="form" (ngSubmit)="send_form(form.value)">
+
+    <div class="row justify-content-center align-items-center align-content-center text-center caja p-3 gx-3 gy-3" >
+            <div class="col-10">
+                <p class="fs-3 fw-semibold">Filtros</p>
+            </div>
+            <div class="col-3">
+                <p>Selecciona las fechas a visualizar</p>
+            </div>
+            <div class="col-3">
+                <label for="start">Fecha de inicio:</label>
+                <input id="start" type="date" class="form-control" formControlName="start" min="2021-01-01" max="2023-12-31">   
+            </div>
+            <div class="col-3">
+                <label for="start">Fecha final:</label>
+                <input id="start" type="date" class="form-control" formControlName="end" min="2021-01-01" max="2023-12-31">
+
+            </div>
+
+            <div class="col-4">
+                <button class="btn btn-dark" type="submit">Aplicar filtros</button>
+            </div>
+
+        <div class="col-10" *ngIf="data">
+            <app-multi-chart-card [id]="'83383'" [background]="'#2b2b2b'" [data]="data" [tipo]="'line'" [titulo]="'Clustering de los KPI'"></app-multi-chart-card>
+        </div>
+
+        <div class="col-10" *ngIf="registers_plot">
+            <app-multi-chart-card [id]="'833837666776'" [background]="'#2b2b2b'" [data]="registers_plot" [tipo]="'line'" [titulo]="'Clientes registrados'"></app-multi-chart-card>
+        </div>
+    </div>
+</form>
+
 </div>

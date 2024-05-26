@@ -4,5 +4,9 @@
         <li class="nav-item p-2" *ngFor="let r of routes; let i = index">
           <a class="nav-link linked" [routerLink]="'/' + r" [routerLinkActive]="'activado'"><i class="{{icons[i]}}"></i>  {{r}}</a>
         </li>
+        <li class="nav-item p-2">
+          <a class="nav-link linked" [routerLink]="'/login'" [routerLinkActive]="'activado'"><i class="bi bi-box-arrow-right"></i> Cerrar sesión </a>
+        </li>
+
     </ul>
 </div>

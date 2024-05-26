@@ -17,16 +17,33 @@ from scipy.cluster.hierarchy import dendrogram, linkage, fcluster
 import matplotlib.pyplot as plt
 
 
+def color_traffic_light(value, thresholds, kpi):
+    if kpi == 'PD':
+        if value < thresholds[1]:  # Umbral inferior
+            return 'green'
+        elif value < thresholds[0]:  # Umbral superior
+            return 'yellow'
+        else:
+            return 'red'
+    else:
+        if value > thresholds[1]:  # Umbral superior
+            return 'green'
+        elif value > thresholds[0]:  # Umbral inferior
+            return 'yellow'
+        else:
+            return 'red'
+
 class TimeSeries:
-    def __init__(self, sql_session: Session, min_date: str, max_date: str,data:pd.DataFrame=pd.DataFrame(),plot:bool=False):
+    def __init__(self, sql_session: Session, min_date: str, max_date: str,data:pd.DataFrame=pd.DataFrame(),plot:bool=False,idalmacen:str=None):
         self.logger = logging.getLogger(__name__)
         self.sql_session = sql_session
-        self.min_date = min_date
-        self.max_date = max_date
+        self.min_date = datetime.datetime.strptime(min_date, '%Y-%m-%d')
+        self.max_date = datetime.datetime.strptime(max_date, '%Y-%m-%d')
+        self.timedelta = (self.max_date - self.min_date).days
         self.plot = plot
         self.max_d = None
         if data.empty:
-            data = TimeSeries.load_clients(datetime.datetime.strptime(self.min_date,'%d/%m/%Y'),datetime.datetime.strptime(self.max_date,'%d/%m/%Y'))
+            data = TimeSeries.load_clients(min_date,max_date)
         if data.empty:
             self.logger.debug(f"Data empty, getting clients...")
             self.clients = self.get_clients()
@@ -38,13 +55,18 @@ class TimeSeries:
         else:
             self.logger.debug(f"Data not empty")
             self.data = data
+        self.idalmacen = idalmacen
+        if self.idalmacen:
+            #Si se da el parametro idalmacen solo se procesaran los datos de esa tienda
+            self.data = self.data[self.data['canal'] == self.idalmacen]
+
         self.logger.debug(f"Processing time series")
         self.time_series = self.process_time_series()
         if type(self.time_series) is bool or self.time_series.empty:
             raise Exception('No time series data to process')
 
     @staticmethod
-    def load_clients(start_date,end_date,folder_path:str='data'):
+    def load_clients(start_date,end_date,folder_path:str='app/time_series/data'):
         logger = logging.getLogger(__name__)
         logger.debug(f"Loading clients from {folder_path}")
 
@@ -60,7 +82,7 @@ class TimeSeries:
                     file_end_date = datetime.datetime.strptime(parts[2].replace('.csv', ''), '%Y-%m-%d')
 
 
-                    if file_start_date <= start_date and file_end_date >= end_date:
+                    if file_start_date <= datetime.datetime.strptime(start_date, '%Y-%m-%d') and file_end_date >= datetime.datetime.strptime(end_date, '%Y-%m-%d'):
                         file_path = os.path.join(folder_path, filename)
                         df = pd.read_csv(file_path)
                         data_frame = df
@@ -155,7 +177,7 @@ class TimeSeries:
 
         data = self.__preprocess_data(data)
         data = self.__feature_extraction(data)
-        data.to_csv(f'data/timeseriesdata_{datetime.datetime.strptime(self.min_date,"%d/%m/%Y").strftime("%Y-%m-%d")}_{datetime.datetime.strptime(self.max_date,"%d/%m/%Y").strftime("%Y-%m-%d")}.csv')
+        data.to_csv(f'app/time_series/data/timeseriesdata_{self.min_date.strftime("%Y-%m-%d")}_{self.max_date.strftime("%Y-%m-%d")}.csv')
         self.logger.debug(f"data saved to csv")
         return data
 
@@ -164,6 +186,9 @@ class TimeSeries:
             return False
 
         self.logger.debug(f"starting processing time series")
+        if self.timedelta > 60:
+            # Si el rango de fechas es mayor a 60 días, se agrupan los datos por Semana
+            self.data['fechaalta'] = self.data['fechaalta'].dt.to_period('W').dt.to_timestamp()
 
         relevant_columns = ['fechaalta', 'TM', 'UPT', 'CMV', 'PVM', 'PD', 'cl_registrados']
 
@@ -214,7 +239,10 @@ class TimeSeries:
         last = linked[-10:, 2]
         acceleration = np.diff(last, 2)
         acceleration_rev = acceleration[::-1]
-        idx = np.argmax(acceleration_rev) + 2
+        if acceleration_rev.size > 0:
+            idx = np.argmax(acceleration_rev) + 2
+        else:
+            idx = 0
 
         optimal_max_d = last[::-1][idx]
         self.max_d = optimal_max_d
@@ -263,21 +291,6 @@ class TimeSeries:
             'PD': [global_means['PD'] * 1.1, global_means['PD'] * 0.9]  # Invertir los umbrales para PD
         }
 
-        def color_traffic_light(value, thresholds, kpi):
-            if kpi == 'PD':
-                if value < thresholds[1]:  # Umbral inferior
-                    return 'green'
-                elif value < thresholds[0]:  # Umbral superior
-                    return 'yellow'
-                else:
-                    return 'red'
-            else:
-                if value > thresholds[1]:  # Umbral superior
-                    return 'green'
-                elif value > thresholds[0]:  # Umbral inferior
-                    return 'yellow'
-                else:
-                    return 'red'
 
         # Aplicar colores a cada celda de la tabla de medias
         colored_means = cluster_means.copy()

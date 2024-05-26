@@ -6,13 +6,23 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { AdministradorComponent } from './components/administrador/administrador.component';
 import { TimeSeriesComponent } from './components/time-series/time-series.component';
-import { SentimentAnalisisComponent } from './components/sentiment-analisis/sentiment-analisis.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MainService } from './services/main.service';
 import { MultiChartCardComponent } from './components/multi-chart-card/multi-chart-card.component';
 import { NavigatorComponent } from './components/navigator/navigator.component';
 import { CookieService } from 'ngx-cookie-service';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+
+import { mainGuard } from './guard/main.guard';
+import { adminGuard } from './guard/admin.guard';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+
 
 @NgModule({
   declarations: [
@@ -20,7 +30,6 @@ import { CookieService } from 'ngx-cookie-service';
     LoginComponent,
     AdministradorComponent,
     TimeSeriesComponent,
-    SentimentAnalisisComponent,
     MultiChartCardComponent,
     NavigatorComponent
   ],
@@ -28,11 +37,18 @@ import { CookieService } from 'ngx-cookie-service';
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule
   ],
   providers: [
     MainService,
-    CookieService
+    CookieService, mainGuard, adminGuard
   ],
   bootstrap: [AppComponent]
 })
